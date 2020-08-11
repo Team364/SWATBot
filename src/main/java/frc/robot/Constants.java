@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -16,4 +17,12 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final int SAWARM = 1;
+    public static final int SLAVE = 2;
+
+    public static final boolean SAWARMENABLECURRENTLIMIT = true;
+    public static final int SAWARMCONTINUOUSCURRENTLIMIT = 25;
+    public static final int SAWARMPEAKCURRENT = 30;
+    public static final double SAWARMPEAKCURRENTDURATION = 0.1;
 }
