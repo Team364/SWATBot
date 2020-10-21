@@ -28,7 +28,10 @@ public class Robot extends TimedRobot {
   public TalonFX slaveLeft;
   public TalonFX right;
   public TalonFX slaveRight;
-  public Joystick controller = new Joystick(0);
+  // public TalonFX saw;
+  // public TalonFX sawSlave;
+  public static Joystick controller = new Joystick(0);
+  public static boolean toggleDS = true;
 
   public double frontThrottle;
   public double backThrottle;
@@ -36,8 +39,13 @@ public class Robot extends TimedRobot {
   public double leftPower;
   public double rightPower;
   public double throttle;
+  public boolean damper = true;
 
   private RobotContainer m_robotContainer;
+
+
+  public static MockDS ds;
+  private boolean haveIStartedFakeDS = false;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -55,9 +63,12 @@ public class Robot extends TimedRobot {
     left.setInverted(false);
     slaveLeft.setInverted(InvertType.FollowMaster);
     slaveRight.setInverted(InvertType.FollowMaster);
+    // saw = new TalonFX(1);
+    // sawSlave = new TalonFX(2);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    ds = new MockDS();
   }
 
   /**
@@ -73,6 +84,7 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+
     CommandScheduler.getInstance().run();
   }
 
@@ -85,6 +97,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    if(!haveIStartedFakeDS){
+      ds.start();
+      haveIStartedFakeDS = true;
+    }
+    //   haveIStartedFakeDS = true;
   }
 
   /**
@@ -129,8 +146,25 @@ public class Robot extends TimedRobot {
     throttle = backThrottle - frontThrottle;
     leftPower = throttle + steer;
     rightPower = throttle - steer;
-    left.set(ControlMode.PercentOutput, leftPower);
-    right.set(ControlMode.PercentOutput, rightPower);
+    if(controller.getRawButton(3)){
+      damper = true;
+    } else if(controller.getRawButton(4)){
+      damper = false;
+    }
+    if(damper){
+      left.set(ControlMode.PercentOutput, leftPower * 0.25);
+      right.set(ControlMode.PercentOutput, rightPower * 0.25);
+    } else if(!damper){
+      left.set(ControlMode.PercentOutput, leftPower * 0.5);
+      right.set(ControlMode.PercentOutput, rightPower * 0.5);
+    }
+    // double input = controller.getRawAxis(1);
+    // input *= input;
+    // saw.set(ControlMode.PercentOutput, input);
+    // sawSlave.set(ControlMode.PercentOutput, input);
+
+
+
   }
 
   @Override
@@ -145,4 +179,10 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
+
+  // public void toggle(){
+  //   if(controller.getRawButton(1)){
+  //     toggleDS = !toggleDS;
+  //   }
+  // }
 }
