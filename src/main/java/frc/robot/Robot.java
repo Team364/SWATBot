@@ -13,9 +13,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -46,6 +48,8 @@ public class Robot extends TimedRobot {
 
   public static MockDS ds;
   private boolean haveIStartedFakeDS = false;
+
+  public AnalogPotentiometer pot = new AnalogPotentiometer(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -158,13 +162,19 @@ public class Robot extends TimedRobot {
       left.set(ControlMode.PercentOutput, leftPower * 0.5);
       right.set(ControlMode.PercentOutput, rightPower * 0.5);
     }
+
+
+    left.set(ControlMode.PercentOutput, deadband(pot.get()) * 0.5);
+    right.set(ControlMode.PercentOutput, deadband(pot.get()) * 0.5);
+    SmartDashboard.putNumber("pot", deadband(pot.get()));
     // double input = controller.getRawAxis(1);
     // input *= input;
     // saw.set(ControlMode.PercentOutput, input);
     // sawSlave.set(ControlMode.PercentOutput, input);
+  }
 
-
-
+  public double deadband(double input){
+    return Math.abs(input) > 0.1 ? input : 0;
   }
 
   @Override

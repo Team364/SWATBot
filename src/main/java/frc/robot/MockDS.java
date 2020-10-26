@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class MockDS {
   private Thread m_thread;
@@ -33,7 +34,7 @@ public class MockDS {
         e1.printStackTrace();
         return;
       }
-      InetSocketAddress addr = new InetSocketAddress("127.0.0.1", 1110);
+      InetSocketAddress addr = new InetSocketAddress("10.3.64.2", 1110);
       byte[] sendData = new byte[6];
       DatagramPacket packet = new DatagramPacket(sendData, 0, 6, addr);
       short sendCount = 0;
@@ -48,6 +49,7 @@ public class MockDS {
               initCount++;
               sendData[0] = 0;
             } 
+            SmartDashboard.putNumber("init count", initCount);
             packet.setData(sendData);
             socket.send(packet);
           } catch (InterruptedException ex) {
