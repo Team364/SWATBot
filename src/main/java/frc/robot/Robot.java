@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -45,6 +46,7 @@ public class Robot extends TimedRobot {
   public boolean damper = true;
 
   private RobotContainer m_robotContainer;
+  public static CTREConfigs ctreConfigs;
 
 
   public static MockDS ds;
@@ -52,7 +54,8 @@ public class Robot extends TimedRobot {
 
   public AnalogPotentiometer pot = new AnalogPotentiometer(0);
 
-  public SerialPort radio = new SerialPort(9600, Port.kUSB);
+
+ // public SerialPort radio = new SerialPort(9600, Port.kUSB1);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -85,14 +88,48 @@ public class Robot extends TimedRobot {
    * <p>This runs after the mode specific periodic functions, but before
    * LiveWindow and SmartDashboard integrated updating.
    */
+
+  int counter = 0;
+  String full_message = "";
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    System.out.println(radio.readString());
-    CommandScheduler.getInstance().run();
+    // String hold = radio.readString(1);
+    // SmartDashboard.putString("radio", hold);
+    // full_message += hold;
+    // SmartDashboard.putString("full", full_message);
+
+    // switch(hold){
+    //   case "F":
+    //     leftPower = 1;
+    //     rightPower = 1;
+    //     break;
+    //   case "L":
+    //     leftPower = -1;
+    //     rightPower = 1;
+    //     break;
+    //   case "R":
+    //     leftPower = 0.5;
+    //     rightPower = -0.5;
+    //     break;
+    //   case "B":
+    //     leftPower = -0.5;
+    //     rightPower = -0.5;
+    //     break;
+    //   case "N":
+    //     leftPower = 0;
+    //     rightPower = 0;
+    //     break;
+    //   default:
+    //     break;
+    // }
+    // SmartDashboard.putNumber("leftpower", leftPower);
+    // SmartDashboard.putNumber("rightpower", rightPower);
+    // CommandScheduler.getInstance().run();
   }
 
   /**
@@ -105,10 +142,10 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     if(!haveIStartedFakeDS){
-      ds.start();
+      //ds.start();
       haveIStartedFakeDS = true;
     }
-    //   haveIStartedFakeDS = true;
+    //haveIStartedFakeDS = true;
   }
 
   /**
@@ -147,28 +184,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    frontThrottle = controller.getRawAxis(2);
-    backThrottle = controller.getRawAxis(3);
-    steer = controller.getRawAxis(0);
-    throttle = backThrottle - frontThrottle;
-    leftPower = throttle + steer;
-    rightPower = throttle - steer;
-    if(controller.getRawButton(3)){
-      damper = true;
-    } else if(controller.getRawButton(4)){
-      damper = false;
-    }
-    if(damper){
-      left.set(ControlMode.PercentOutput, leftPower * 0.25);
-      right.set(ControlMode.PercentOutput, rightPower * 0.25);
-    } else if(!damper){
-      left.set(ControlMode.PercentOutput, leftPower * 0.5);
-      right.set(ControlMode.PercentOutput, rightPower * 0.5);
-    }
+    rightPower = controller.getRawAxis(1);
+    leftPower = controller.getRawAxis(5);
 
+    left.set(ControlMode.PercentOutput, leftPower);
+    right.set(ControlMode.PercentOutput, rightPower); 
 
-    left.set(ControlMode.PercentOutput, deadband(pot.get()) * 0.5);
-    right.set(ControlMode.PercentOutput, deadband(pot.get()) * 0.5);
+    // left.set(ControlMode.PercentOutput, deadband(pot.get()) * 0.5);
+    // right.set(ControlMode.PercentOutput, deadband(pot.get()) * 0.5);
+
     SmartDashboard.putNumber("pot", deadband(pot.get()));
     // double input = controller.getRawAxis(1);
     // input *= input;
@@ -199,3 +223,44 @@ public class Robot extends TimedRobot {
   //   }
   // }
 }
+
+
+// SmartDashboard.putString("full ", full_message);
+
+//     SmartDashboard.putNumber("hello", message.length);
+//     for(char c : message){
+//       switch(c){
+//         case 'e':
+//           leftSignal = false;
+//           rightSignal = false;
+//           break;
+//         case 'L':
+//           leftMessage = "";
+//           leftSignal = true;
+//           break;
+//         case 'R':
+//           rightMessage = "";
+//           rightSignal = true;
+//           break;
+//         default:
+//           if(leftSignal){
+//             leftMessage += c;
+//           }
+//           if(rightSignal){
+//             rightMessage += c;
+//           }
+//           break;
+//       }
+//     }
+
+//     if(leftMessage != ""){
+//       //SmartDashboard.putNumber("hello", counter++);
+//       SmartDashboard.putString("leftpower", leftMessage);
+
+//       leftPower = (double)Integer.parseInt(leftMessage);
+//       leftPower = (leftPower - 511.5) / 511.5; 
+//     }
+//     if(rightMessage != ""){
+//       rightPower = (double)Integer.parseInt(rightMessage);
+//       rightPower = (rightPower - 511.5) / 511.5;      
+//     }
