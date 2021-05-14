@@ -64,7 +64,7 @@ public class Arm extends SubsystemBase {
     public void periodic(){
         x += controller.getRawAxis(0);
         y += -controller.getRawAxis(1);
-        if(Math.sqrt(x*x + y*y) >= maxHeight){
+        if(Math.sqrt(x*x + y*y) >= maxHeight){  
             x -= controller.getRawAxis(0);
             y -= controller.getRawAxis(1);
         }
