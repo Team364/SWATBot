@@ -21,7 +21,7 @@ public final class CTREConfigs {
 
         drivetrainFXConfig = new TalonFXConfiguration();
 
-
+        midJointFXConfig = new TalonFXConfiguration();
         lowJointFXConfig = new TalonFXConfiguration();
         sawFXConfig = new TalonFXConfiguration();
 
@@ -48,8 +48,8 @@ public final class CTREConfigs {
             midJointFXConfig.slot0.kD = Constants.Arm.kD;
             midJointFXConfig.slot0.kF = Constants.Arm.kF;
             midJointFXConfig.supplyCurrLimit = armSupplyLimit;
-            midJointFXConfig.motionAcceleration = 0;
-            midJointFXConfig.motionCruiseVelocity = 0;
+            midJointFXConfig.motionAcceleration = 400;
+            midJointFXConfig.motionCruiseVelocity = 1000;
             midJointFXConfig.peakOutputForward = Constants.Arm.midpeakOutputForward;
             midJointFXConfig.peakOutputReverse = Constants.Arm.midpeakOutputReverse;
             midJointFXConfig.forwardSoftLimitThreshold = Constants.Arm.lowfwdHardLimit;

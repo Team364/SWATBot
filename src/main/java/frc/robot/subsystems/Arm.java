@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import static frc.robot.Constants.Arm.*;
@@ -27,12 +28,11 @@ public class Arm extends SubsystemBase {
     private ControlStates controlState;
 
     public Arm(Joystick controller){
-        lowJointFX = new TalonFX(Constants.Arm.lowJoinID);
-        midJointFX = new TalonFX(Constants.Arm.lowJoinID);
+        lowJointFX = new TalonFX(Constants.Arm.lowJointID);
+        midJointFX = new TalonFX(Constants.Arm.midJointID);
         this.controller = controller;
         controlState = ControlStates.still;
         configMidJoint();
-
         configLowJoint();
     }
 
@@ -51,44 +51,50 @@ public class Arm extends SubsystemBase {
         lowJointFX.setSelectedSensorPosition(0);
     }
 
-
+    public double getMidAngle(){
+        return falconToRadians(midJointFX.getSelectedSensorPosition());
+    }
 
     public double getLowAngle(){
-        return 0;
-    }
-    public double getMidAngle(){
-        return 0;
+        return falconToRadians(lowJointFX.getSelectedSensorPosition());
     }
 
     @Override
     public void periodic(){
-        x += controller.getRawAxis(0);
-        y += -controller.getRawAxis(1);
+        double dampen = 0.05;
+        double c_x = controller.getRawAxis(0);
+        double c_y = -controller.getRawAxis(1);
+          c_x = Math.abs(c_x) > 0.05 ? c_x*dampen : 0;
+          c_y = Math.abs(c_y) > 0.05 ? c_y*dampen : 0;
+        x += c_x;
+        y += c_y;
         if(Math.sqrt(x*x + y*y) >= maxHeight){  
-            x -= controller.getRawAxis(0);
-            y -= controller.getRawAxis(1);
+            x -= c_x;
+            y -= c_y;
         }
+
 
         midAngle = Math.acos((x*x + y*y - lowArmLength*lowArmLength - midArmLength*midArmLength)/(2*lowArmLength*midArmLength));
         lowAngle = Math.atan2(y,x)-Math.atan((midArmLength*Math.sin(midAngle))/(lowArmLength + midArmLength*Math.cos(midAngle)));
-        
-        midAngle = midAngle >= midJointMax ? midJointMax : midAngle;
-        midAngle = midAngle <= midJointMin ? midJointMin : midAngle;
-        
-        midJointFX.set(ControlMode.MotionMagic, radiansToFalcon(midAngle));
-        lowJointFX.set(ControlMode.MotionMagic, radiansToFalcon(lowAngle));
+        //midJointFX.set(ControlMode.Position, radiansToFalcon(midAngle)*120.0);
+        //lowJointFX.set(ControlMode.Position, radiansToFalcon(lowAngle)*120.0);
+        SmartDashboard.putNumber("target ", midAngle );
+        SmartDashboard.putNumber("x ", x);
+        SmartDashboard.putNumber("y ", y);
+        SmartDashboard.putNumber("midAngle ", Math.toDegrees(midAngle));
+        SmartDashboard.putNumber("lowAngle ", Math.toDegrees(lowAngle));
+        SmartDashboard.putNumber("position ", (falconToRadians(midJointFX.getSelectedSensorPosition())));
 
-        robot_midAngle = falconToRadians(midJointFX.getSelectedSensorPosition());
-        robot_lowAngle = falconToRadians(lowJointFX.getSelectedSensorPosition());
+
     }
 
 
     public double falconToRadians(double units){
-        return 0;
+        return units * ((2*Math.PI) / 2048.0);
     }
 
     public double radiansToFalcon(double units){
-        return 0;
+        return units * (2048.0 / (2*Math.PI));
     }
     
 }

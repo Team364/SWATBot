@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Arm;
 import edu.wpi.first.wpilibj.Joystick;
 
 
@@ -24,7 +25,7 @@ public class RobotContainer {
   // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
    private final Joystick controller = new Joystick(0);
   // private final SawArm SawArm = new SawArm(controller);
-
+  private final Arm s_Arm = new Arm(controller);
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
 

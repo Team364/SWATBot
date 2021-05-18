@@ -51,8 +51,8 @@ public final class Constants {
     }
 
     public final static class Arm {
-        public static final int lowJoinID = 5;
-        public static final int midJointID = 6;
+        public static final int lowJointID = 5;
+        public static final int midJointID = 0;
         public static final boolean lowJointInvert = false;
         public static final boolean midJointInvert = false;
         public static final NeutralMode neutralMode = NeutralMode.Brake;
@@ -62,7 +62,7 @@ public final class Constants {
         public static final double lowJointMax = 0;
         public static final double midJointMin = 0;
         public static final double midJointMax = 0;
-        public static final double maxHeight = 0;
+        public static final double maxHeight = 2;
         public static final double lowArmLength = 1;
         public static final double midArmLength = 1;
 
@@ -72,7 +72,7 @@ public final class Constants {
         public static final double gearRatio = 1;
 
         /* Arm PID Constants */
-        public static final double kP = 0.6;
+        public static final double kP = 0.1;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kF = 0.0; 
@@ -83,8 +83,8 @@ public final class Constants {
         public static final int motorPeakCurrentLimit = 60;
         public static final double motorPeakCurrentDuration = 0.1;
         public static final boolean motorEnableCurrentLimit = true;
-		public static final double midpeakOutputForward = 0;
-		public static final double midpeakOutputReverse = 0;
+		public static final double midpeakOutputForward = 0.2;
+		public static final double midpeakOutputReverse = -0.2;
 		public static final int midfwdHardLimit = 0;
         public static final int midrevHardLimit = 0;
         public static final double lowJointpeakOutputForward = 0;

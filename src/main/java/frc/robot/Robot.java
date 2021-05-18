@@ -46,13 +46,14 @@ public class Robot extends TimedRobot {
   public boolean damper = true;
 
   private RobotContainer m_robotContainer;
-  public static CTREConfigs ctreConfigs;
 
 
   public static MockDS ds;
   private boolean haveIStartedFakeDS = false;
 
   public AnalogPotentiometer pot = new AnalogPotentiometer(0);
+
+  public static CTREConfigs ctreConfigs;
 
 
  // public SerialPort radio = new SerialPort(9600, Port.kUSB1);
@@ -63,9 +64,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    //ds = new MockDS();
+
+    ctreConfigs = new CTREConfigs();
+
     right = new TalonFX(1);
-    slaveRight = new TalonFX(2);
-    left = new TalonFX(3);
+    slaveRight = new TalonFX(3);
+    left = new TalonFX(2);
     slaveLeft = new TalonFX(4);
     slaveLeft.follow(left);
     slaveRight.follow(right);
@@ -78,7 +83,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    ds = new MockDS();
   }
 
   /**
@@ -129,7 +133,7 @@ public class Robot extends TimedRobot {
     // }
     // SmartDashboard.putNumber("leftpower", leftPower);
     // SmartDashboard.putNumber("rightpower", rightPower);
-    // CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
   }
 
   /**
@@ -184,11 +188,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    rightPower = controller.getRawAxis(1);
-    leftPower = controller.getRawAxis(5);
+    rightPower =  Math.abs(controller.getRawAxis(1)) < 0.1 ? 0 : controller.getRawAxis(1);
+    leftPower = Math.abs(controller.getRawAxis(5)) < 0.1 ? 0 : controller.getRawAxis(5);
 
-    left.set(ControlMode.PercentOutput, leftPower);
-    right.set(ControlMode.PercentOutput, rightPower); 
+    //left.set(ControlMode.PercentOutput, leftPower);
+    //right.set(ControlMode.PercentOutput, rightPower); 
 
     // left.set(ControlMode.PercentOutput, deadband(pot.get()) * 0.5);
     // right.set(ControlMode.PercentOutput, deadband(pot.get()) * 0.5);
