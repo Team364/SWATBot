@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -39,7 +40,15 @@ public class Saw extends SubsystemBase {
 
     @Override
     public void periodic(){
-        
+        //button
+        if(false){
+            saw.set(ControlMode.Velocity, rpmToFalcon(1000));
+        }
+    }
+
+    private double rpmToFalcon(double units){
+        return units * Constants.Saw.gearRatio;
+
     }
 
 }

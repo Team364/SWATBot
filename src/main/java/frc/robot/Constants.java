@@ -33,7 +33,7 @@ public final class Constants {
         public static final int slaveMotorStatus1 = 255;
         public static final int slaveMotorStatus2 = 255;
         
-        public static final double gearRatio = 1;
+        public static final double gearRatio = 4.0;
 
         /* Saw PID Constants */
         public static final double kP = 0.6;
